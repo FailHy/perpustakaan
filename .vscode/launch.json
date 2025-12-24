@@ -1,0 +1,89 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-PengembalianApplication<pengembalian>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pail.pengembalian.PengembalianApplication",
+            "projectName": "pengembalian",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=57473 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=pengembalian"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-PeminjamanApplication<peminjaman>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pail.peminjaman.PeminjamanApplication",
+            "projectName": "peminjaman",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=57477 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=peminjaman"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BukuApplication<buku>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pail.buku.BukuApplication",
+            "projectName": "buku",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55682 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=buku"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-AnggotaApplication<anggota>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pail.anggota.AnggotaApplication",
+            "projectName": "anggota",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55679 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=anggota"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-EurekaServerApplication<eureka-server>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pail.eureka_server.EurekaServerApplication",
+            "projectName": "eureka-server",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiGatewayApplication<api-gateway>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pail.api_gateway.ApiGatewayApplication",
+            "projectName": "api-gateway",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=50656 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=api-gateway"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-AnggotaApplication<com.pail-anggota>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pail.anggota.AnggotaApplication",
+            "projectName": "com.pail-anggota",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BukuApplication<com.pail-buku>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pail.buku.BukuApplication",
+            "projectName": "com.pail-buku",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
