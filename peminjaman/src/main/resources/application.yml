@@ -49,6 +49,17 @@ management:
   zipkin:
     tracing:
       enabled: false
+  # Actuator Monitoring Endpoints
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,httpexchanges
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 # Logging with trace-id
 logging:
