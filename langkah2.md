@@ -368,16 +368,106 @@ Automation server untuk Continuous Integration/Continuous Deployment.
 
 **File**: `Jenkinsfile` di root repository
 
-### 🧪 Setup Jenkins
+### 🚀 Setup Jenkins (Step by Step)
+
+#### Step 1: Start Jenkins
 
 ```bash
-# Via Docker
-docker run -d --name jenkins -p 8080:8080 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+# Via Docker Compose (sudah include di docker-compose.yaml)
+docker compose up -d jenkins
 
 # Get initial password
 docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
 # Access: http://localhost:8080
+```
+
+#### Step 2: Install Plugins
+
+Setelah login pertama kali:
+1. Pilih **"Install suggested plugins"** → tunggu selesai
+2. Buat admin user (misal: `admin/admin`)
+3. Klik **"Start using Jenkins"**
+
+**Plugin tambahan (Manage Jenkins → Plugins → Available):**
+- Docker Pipeline
+- Pipeline: Stage View
+
+#### Step 3: Konfigurasi Tools
+
+Buka **Manage Jenkins → Tools** lalu konfigurasi:
+
+**JDK Installation:**
+| Field | Value |
+|-------|-------|
+| Name | `JDK17` |
+| Install automatically | ✅ Check |
+| Version | `jdk-17.0.x+xx` |
+
+**Maven Installation:**
+| Field | Value |
+|-------|-------|
+| Name | `Maven` |
+| Install automatically | ✅ Check |
+| Version | `3.9.x` |
+
+> ⚠️ **PENTING**: Nama tools **HARUS** sama persis dengan yang ada di `Jenkinsfile`: `JDK17` dan `Maven`
+
+#### Step 4: Buat Pipeline Job
+
+1. Klik **"+ New Item"** di sidebar
+2. Masukkan nama: `perpustakaan-pipeline`
+3. Pilih **"Pipeline"** → Klik OK
+4. Scroll ke **Pipeline** section:
+
+| Field | Value |
+|-------|-------|
+| Definition | `Pipeline script from SCM` |
+| SCM | `Git` |
+| Repository URL | `file:///d:/Downloads/service-perpustakaan-fix-main` (local) atau URL GitHub |
+| Branch | `*/main` atau `*/master` |
+| Script Path | `Jenkinsfile` |
+
+5. Klik **Save**
+
+#### Step 5: Run Pipeline
+
+1. Klik job `perpustakaan-pipeline`
+2. Klik **"Build Now"**
+3. Monitor di **Build History** → klik nomor build → **Console Output**
+
+### 📋 Pipeline Stages
+
+Pipeline Jenkinsfile akan menjalankan:
+
+```
+📥 Checkout       → Clone repository
+🔨 Build          → mvn clean package (4 services parallel)
+🧪 Test           → mvn test (4 services parallel)
+🐳 Infrastructure → docker compose up rabbitmq, elasticsearch
+📊 ELK Stack      → docker compose up logstash, kibana
+📈 Monitoring     → docker compose up prometheus, grafana
+🏥 Health Check   → Verifikasi semua service
+✅ Display URLs   → Tampilkan akses URLs
+```
+
+### 🔧 Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `mvn not found` | Pastikan Maven dikonfigurasi dengan nama `Maven` |
+| `JDK not found` | Pastikan JDK dikonfigurasi dengan nama `JDK17` |
+| `docker not found` | Install Docker Desktop dan restart Jenkins |
+| Build failed on Windows | Pastikan menggunakan `bat` bukan `sh` di Jenkinsfile |
+
+### 🧪 Verifikasi
+
+```bash
+# Cek Jenkins running
+curl http://localhost:8080/login
+
+# Cek pipeline status via API
+curl http://localhost:8080/job/perpustakaan-pipeline/lastBuild/api/json
 ```
 
 ---
