@@ -390,7 +390,7 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 cd d:\Downloads\service-perpustakaan-fix-main
 
 # Start all
-docker-compose up -d
+docker compose up -d
 
 # OR step by step:
 # 1. Infrastructure (30s)
@@ -408,10 +408,7 @@ docker-compose up -d api-gateway
 # 5. Monitoring (60s)
 docker-compose up -d logstash kibana prometheus grafana
 
-# 6. Frontend
-cd perpustakaan-frontend && npm install && npm run dev
 ```
-
 ### 🖥️ Local Development
 
 ```bash

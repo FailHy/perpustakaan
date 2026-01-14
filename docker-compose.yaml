@@ -361,6 +361,28 @@ services:
       retries: 3
       start_period: 30s
 
+  # ====== CI/CD Server (Jenkins) ======
+
+  # Jenkins - Continuous Integration/Deployment
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"     # Jenkins Web UI
+      - "50000:50000"   # Jenkins agents
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
 volumes:
   anggota_data:
   buku_data:
@@ -369,6 +391,7 @@ volumes:
   elasticsearch_data:
   prometheus_data:
   grafana_data:
+  jenkins_home:
 
 networks:
   microservices-network:
