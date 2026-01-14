@@ -2,13 +2,15 @@ pipeline {
     agent any
     
     tools {
+        // 💡 PASTIKAN: Nama 'Maven' dan 'JDK17' sesuai dengan yang ada di 
+        // Manage Jenkins -> Tools -> Global Tool Configuration
         maven 'Maven'
         jdk 'JDK17'
     }
     
     environment {
+        // Menggunakan Docker Compose V2 yang baru saja Anda instal
         DOCKER_COMPOSE = 'docker compose'
-        PROJECT_NAME = 'perpustakaan-microservices'
     }
     
     stages {
@@ -100,7 +102,7 @@ pipeline {
             steps {
                 echo '🐳 Checking Docker and Infrastructure...'
                 sh 'docker --version'
-                sh 'docker compose version'
+                sh "${DOCKER_COMPOSE} version"
             }
         }
         
@@ -108,7 +110,8 @@ pipeline {
         stage('Deploy Infrastructure') {
             steps {
                 echo '🚀 Starting Infrastructure Services...'
-                sh '${DOCKER_COMPOSE} up -d rabbitmq elasticsearch'
+                // Pastikan file docker-compose.yml ada di root folder
+                sh "${DOCKER_COMPOSE} up -d rabbitmq elasticsearch"
                 echo '⏳ Waiting for infrastructure to be ready...'
                 sh 'sleep 30'
             }
@@ -118,7 +121,7 @@ pipeline {
         stage('Deploy ELK Stack') {
             steps {
                 echo '📊 Starting ELK Stack (Logstash, Kibana)...'
-                sh '${DOCKER_COMPOSE} up -d logstash kibana'
+                sh "${DOCKER_COMPOSE} up -d logstash kibana"
                 echo '⏳ Waiting for ELK to be ready...'
                 sh 'sleep 30'
             }
@@ -128,7 +131,7 @@ pipeline {
         stage('Deploy Monitoring') {
             steps {
                 echo '📈 Starting Prometheus & Grafana...'
-                sh '${DOCKER_COMPOSE} up -d prometheus grafana'
+                sh "${DOCKER_COMPOSE} up -d prometheus grafana"
                 echo '⏳ Waiting for monitoring to be ready...'
                 sh 'sleep 15'
             }
@@ -149,6 +152,7 @@ pipeline {
                     
                     services.each { svc ->
                         try {
+                            // Menggunakan sh untuk curl di Linux
                             sh "curl -s -o /dev/null -w '%{http_code}' ${svc.url}"
                             echo "✅ ${svc.name} is healthy"
                         } catch (Exception e) {
@@ -171,21 +175,11 @@ pipeline {
                    • Eureka Server:    http://localhost:8761
                    • API Gateway:      http://localhost:9000
                    • Anggota Service:  http://localhost:8081
-                   • Buku Service:     http://localhost:8082
-                   • Peminjaman:       http://localhost:8083
-                   • Pengembalian:     http://localhost:8084
                 
-                🐰 MESSAGE BROKER:
-                   • RabbitMQ UI:      http://localhost:15672 (guest/guest)
-                
-                📊 ELK STACK:
-                   • Elasticsearch:    http://localhost:9200
+                📊 MONITORING & LOGS:
+                   • RabbitMQ UI:      http://localhost:15672
                    • Kibana:           http://localhost:5601
-                
-                📈 MONITORING:
-                   • Prometheus:       http://localhost:9090
-                   • Grafana:          http://localhost:3000 (admin/admin)
-                
+                   • Grafana:          http://localhost:3000
                 ═══════════════════════════════════════════════════════
                 '''
             }
@@ -194,26 +188,13 @@ pipeline {
     
     post {
         success {
-            echo '''
-            ╔═══════════════════════════════════════════════════════╗
-            ║  ✅ BUILD & DEPLOYMENT SUCCESSFUL!                    ║
-            ║                                                       ║
-            ║  All microservices built, tested, and infrastructure  ║
-            ║  deployed successfully.                               ║
-            ╚═══════════════════════════════════════════════════════╝
-            '''
+            echo '✅ BUILD & DEPLOYMENT SUCCESSFUL!'
         }
         failure {
-            echo '''
-            ╔═══════════════════════════════════════════════════════╗
-            ║  ❌ BUILD OR DEPLOYMENT FAILED!                       ║
-            ║                                                       ║
-            ║  Please check the console output for details.         ║
-            ╚═══════════════════════════════════════════════════════╝
-            '''
+            echo '❌ BUILD OR DEPLOYMENT FAILED!'
         }
         always {
-            echo '🔄 Pipeline completed at: ' + new Date().format('yyyy-MM-dd HH:mm:ss')
+            echo "🔄 Pipeline completed at: ${new Date().format('yyyy-MM-dd HH:mm:ss')}"
         }
     }
 }
