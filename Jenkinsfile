@@ -26,7 +26,7 @@ pipeline {
                     steps {
                         echo '🔨 Building Anggota Service...'
                         dir('anggota') {
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -34,7 +34,7 @@ pipeline {
                     steps {
                         echo '🔨 Building Buku Service...'
                         dir('buku') {
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -42,7 +42,7 @@ pipeline {
                     steps {
                         echo '🔨 Building Peminjaman Service...'
                         dir('peminjaman') {
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -50,7 +50,7 @@ pipeline {
                     steps {
                         echo '🔨 Building Pengembalian Service...'
                         dir('pengembalian') {
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -64,7 +64,7 @@ pipeline {
                     steps {
                         echo '🧪 Testing Anggota Service...'
                         dir('anggota') {
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -72,7 +72,7 @@ pipeline {
                     steps {
                         echo '🧪 Testing Buku Service...'
                         dir('buku') {
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -80,7 +80,7 @@ pipeline {
                     steps {
                         echo '🧪 Testing Peminjaman Service...'
                         dir('peminjaman') {
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -88,7 +88,7 @@ pipeline {
                     steps {
                         echo '🧪 Testing Pengembalian Service...'
                         dir('pengembalian') {
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -99,8 +99,8 @@ pipeline {
         stage('Verify Infrastructure') {
             steps {
                 echo '🐳 Checking Docker and Infrastructure...'
-                bat 'docker --version'
-                bat 'docker compose version'
+                sh 'docker --version'
+                sh 'docker compose version'
             }
         }
         
@@ -108,9 +108,9 @@ pipeline {
         stage('Deploy Infrastructure') {
             steps {
                 echo '🚀 Starting Infrastructure Services...'
-                bat '%DOCKER_COMPOSE% up -d rabbitmq elasticsearch'
+                sh '${DOCKER_COMPOSE} up -d rabbitmq elasticsearch'
                 echo '⏳ Waiting for infrastructure to be ready...'
-                bat 'timeout /t 30 /nobreak'
+                sh 'sleep 30'
             }
         }
         
@@ -118,9 +118,9 @@ pipeline {
         stage('Deploy ELK Stack') {
             steps {
                 echo '📊 Starting ELK Stack (Logstash, Kibana)...'
-                bat '%DOCKER_COMPOSE% up -d logstash kibana'
+                sh '${DOCKER_COMPOSE} up -d logstash kibana'
                 echo '⏳ Waiting for ELK to be ready...'
-                bat 'timeout /t 30 /nobreak'
+                sh 'sleep 30'
             }
         }
         
@@ -128,9 +128,9 @@ pipeline {
         stage('Deploy Monitoring') {
             steps {
                 echo '📈 Starting Prometheus & Grafana...'
-                bat '%DOCKER_COMPOSE% up -d prometheus grafana'
+                sh '${DOCKER_COMPOSE} up -d prometheus grafana'
                 echo '⏳ Waiting for monitoring to be ready...'
-                bat 'timeout /t 15 /nobreak'
+                sh 'sleep 15'
             }
         }
         
@@ -149,7 +149,7 @@ pipeline {
                     
                     services.each { svc ->
                         try {
-                            bat "curl -s -o nul -w \"%%{http_code}\" ${svc.url}"
+                            sh "curl -s -o /dev/null -w '%{http_code}' ${svc.url}"
                             echo "✅ ${svc.name} is healthy"
                         } catch (Exception e) {
                             echo "⚠️ ${svc.name} might not be ready yet"
