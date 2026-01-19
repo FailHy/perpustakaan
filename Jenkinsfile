@@ -66,7 +66,7 @@ pipeline {
                     steps {
                         echo '🧪 Testing Anggota Service...'
                         dir('anggota') {
-                            sh 'mvn test'
+                            sh 'mvn test -Dspring.profiles.active=test'
                         }
                     }
                 }
@@ -74,7 +74,7 @@ pipeline {
                     steps {
                         echo '🧪 Testing Buku Service...'
                         dir('buku') {
-                            sh 'mvn test'
+                            sh 'mvn test -Dspring.profiles.active=test'
                         }
                     }
                 }
@@ -82,7 +82,7 @@ pipeline {
                     steps {
                         echo '🧪 Testing Peminjaman Service...'
                         dir('peminjaman') {
-                            sh 'mvn test'
+                            sh 'mvn test -Dspring.profiles.active=test'
                         }
                     }
                 }
@@ -90,7 +90,7 @@ pipeline {
                     steps {
                         echo '🧪 Testing Pengembalian Service...'
                         dir('pengembalian') {
-                            sh 'mvn test'
+                            sh 'mvn test -Dspring.profiles.active=test'
                         }
                     }
                 }
