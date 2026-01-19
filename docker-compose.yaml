@@ -62,12 +62,12 @@ services:
 
   # Logstash - Log Processing Pipeline
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.11.0
+    build:
+      context: .
+      dockerfile: Dockerfile.logstash
     container_name: logstash
     ports:
       - "5000:5000"   # TCP input untuk menerima log dari aplikasi
-    volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     environment:
       - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
       - xpack.monitoring.enabled=false
@@ -311,21 +311,16 @@ services:
 
   # Prometheus - Metrics Collection
   prometheus:
-    image: prom/prometheus:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.prometheus
     container_name: prometheus
     ports:
       - "9090:9090"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.enable-lifecycle'
     networks:
       - microservices-network
     healthcheck:
@@ -337,18 +332,14 @@ services:
 
   # Grafana - Metrics Visualization
   grafana:
-    image: grafana/grafana:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.grafana
     container_name: grafana
     ports:
       - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
     networks:
       - microservices-network
     depends_on:

@@ -1,0 +1,11 @@
+FROM prom/prometheus:latest
+
+# Copy prometheus config directly into image
+COPY prometheus/prometheus.yml /etc/prometheus/prometheus.yml
+
+# Default command
+CMD [ "--config.file=/etc/prometheus/prometheus.yml", \
+      "--storage.tsdb.path=/prometheus", \
+      "--web.console.libraries=/etc/prometheus/console_libraries", \
+      "--web.console.templates=/etc/prometheus/consoles", \
+      "--web.enable-lifecycle" ]
