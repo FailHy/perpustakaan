@@ -363,9 +363,11 @@ services:
 
   # ====== CI/CD Server (Jenkins) ======
 
-  # Jenkins - Continuous Integration/Deployment
+  # CI/CD Server (Jenkins)
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
     container_name: jenkins
     ports:
       - "8080:8080"     # Jenkins Web UI
@@ -374,6 +376,7 @@ services:
       - JAVA_OPTS=-Xmx512m -Xms256m
     volumes:
       - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - microservices-network
     healthcheck:

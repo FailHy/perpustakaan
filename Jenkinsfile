@@ -2,14 +2,11 @@ pipeline {
     agent any
     
     tools {
-        // 💡 PASTIKAN: Nama 'Maven' dan 'JDK17' sesuai dengan yang ada di 
-        // Manage Jenkins -> Tools -> Global Tool Configuration
         maven 'Maven'
         jdk 'JDK17'
     }
     
     environment {
-        // Menggunakan Docker Compose V2 yang baru saja Anda instal
         DOCKER_COMPOSE = 'docker compose'
     }
     
@@ -21,7 +18,6 @@ pipeline {
             }
         }
         
-        // ====== BUILD STAGE ======
         stage('Build All Services') {
             parallel {
                 stage('Build Anggota') {
@@ -59,7 +55,6 @@ pipeline {
             }
         }
         
-        // ====== TEST STAGE ======
         stage('Test All Services') {
             parallel {
                 stage('Test Anggota') {
@@ -97,7 +92,6 @@ pipeline {
             }
         }
         
-        // ====== INFRASTRUCTURE CHECK ======
         stage('Verify Infrastructure') {
             steps {
                 echo '🐳 Checking Docker and Infrastructure...'
@@ -106,18 +100,18 @@ pipeline {
             }
         }
         
-        // ====== DEPLOY INFRASTRUCTURE ======
+        // ====== PERBAIKAN DI SINI ======
         stage('Deploy Infrastructure') {
             steps {
-                echo '🚀 Starting Infrastructure Services...'
-                // Pastikan file docker-compose.yml ada di root folder
+                echo '🚀 Cleaning and Starting Infrastructure Services...'
+                // Menghapus kontainer lama yang mungkin konflik seperti rabbitmq atau elasticsearch
+                sh "${DOCKER_COMPOSE} down" 
                 sh "${DOCKER_COMPOSE} up -d rabbitmq elasticsearch"
                 echo '⏳ Waiting for infrastructure to be ready...'
                 sh 'sleep 30'
             }
         }
         
-        // ====== DEPLOY ELK STACK ======
         stage('Deploy ELK Stack') {
             steps {
                 echo '📊 Starting ELK Stack (Logstash, Kibana)...'
@@ -127,7 +121,6 @@ pipeline {
             }
         }
         
-        // ====== DEPLOY MONITORING ======
         stage('Deploy Monitoring') {
             steps {
                 echo '📈 Starting Prometheus & Grafana...'
@@ -137,7 +130,6 @@ pipeline {
             }
         }
         
-        // ====== HEALTH CHECK ======
         stage('Health Check') {
             steps {
                 echo '🏥 Verifying all services health...'
@@ -152,7 +144,6 @@ pipeline {
                     
                     services.each { svc ->
                         try {
-                            // Menggunakan sh untuk curl di Linux
                             sh "curl -s -o /dev/null -w '%{http_code}' ${svc.url}"
                             echo "✅ ${svc.name} is healthy"
                         } catch (Exception e) {
@@ -163,7 +154,6 @@ pipeline {
             }
         }
         
-        // ====== DISPLAY INFO ======
         stage('Display Access URLs') {
             steps {
                 echo '''
