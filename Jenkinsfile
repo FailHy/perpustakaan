@@ -104,8 +104,11 @@ pipeline {
         stage('Deploy Infrastructure') {
             steps {
                 echo '🚀 Cleaning and Starting Infrastructure Services...'
-                // Menghapus kontainer lama yang mungkin konflik seperti rabbitmq atau elasticsearch
-                sh "${DOCKER_COMPOSE} down" 
+                // Stop dan hapus semua container dari project ini
+                sh "${DOCKER_COMPOSE} down --remove-orphans || true"
+                // Force remove container yang mungkin konflik dari project lain
+                sh 'docker rm -f rabbitmq elasticsearch logstash kibana prometheus grafana 2>/dev/null || true'
+                // Mulai ulang infrastructure
                 sh "${DOCKER_COMPOSE} up -d rabbitmq elasticsearch"
                 echo '⏳ Waiting for infrastructure to be ready...'
                 sh 'sleep 30'
