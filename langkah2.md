@@ -368,9 +368,7 @@ Automation server untuk Continuous Integration/Continuous Deployment.
 
 **File**: `Jenkinsfile` di root repository
 
-### 🚀 Setup Jenkins (Step by Step)
-
-#### Step 1: Start Jenkins
+### 🧪 Setup Jenkins
 
 ```bash
 # Via Docker Compose (sudah include di docker-compose.yaml)
